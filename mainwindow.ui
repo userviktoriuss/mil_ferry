@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGroupBox" name="carParametersGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>261</width>
+      <height>241</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Параметры машин</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <widget class="QLabel" name="callLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Позывной:</string>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="sizeGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>241</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Габариты</string>
+     </property>
+     <widget class="QLabel" name="widthLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Ширина:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="heightLabel">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>30</y>
+        <width>51</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Длина:</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="coordsGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>241</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Координаты</string>
+     </property>
+     <widget class="QLabel" name="xCoordLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>21</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>X:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="yCoordLabel">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>30</y>
+        <width>16</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Y:</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QPushButton" name="clearCarPushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>83</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Очистить</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="addCarPushButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>200</y>
+       <width>83</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Добавить</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="ferryLengthLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>260</y>
+      <width>111</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Длина парома:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="setFerryLengthPushButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>260</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Задать</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="importPushButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>300</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Импорт</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="documentPushButton">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>300</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Документ</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="clearTablePushButton">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>300</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Очистить</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="transportPushButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>340</y>
+      <width>131</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Перевозка</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="placePushButton">
+    <property name="geometry">
+     <rect>
+      <x>152</x>
+      <y>340</y>
+      <width>121</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Размещение</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
