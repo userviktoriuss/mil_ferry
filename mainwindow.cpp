@@ -7,13 +7,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Set the desired size and screen-mode type.
+    setupScreen();
+}
+
+// Set the desired size and screen-mode type.
+void MainWindow::setupScreen() {
     QScreen *screen = QGuiApplication::primaryScreen ();
     QRect geom = screen->availableGeometry() ;
     int screenWidth = geom.width();
     int screenHeight = geom.height();
-    this->resize(screenWidth, screenHeight);
-    this->setWindowState(Qt::WindowMaximized);
+    this->setFixedHeight(screenHeight);
+    this->setFixedWidth(screenWidth);
 }
 
 MainWindow::~MainWindow()

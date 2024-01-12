@@ -24,5 +24,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    void setupScreen();
 };
 #endif // MAINWINDOW_H
