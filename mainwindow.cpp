@@ -14,15 +14,60 @@ MainWindow::MainWindow(QWidget *parent)
     reloadApp();
 }
 
-void MainWindow::clearApp() {
-    clearCar();
-    //clearFerry();
-    clearTable();
-}
+// TODO:
+
 
 void MainWindow::reloadApp() {
+    // Clear all the data.
+    clearData();
+    clearFerry();
+
+    // Clear UI
+    clearCarLineEdits();
+    clearFerryLineEdit();
+    clearGraph();
+
+    // Redraw UI
     reloadTable();
-    reloadCar();
+    drawGrid();
+    drawData();
+}
+
+void MainWindow::clearGraph() {
+
+}
+
+void MainWindow::drawGrid() {
+
+}
+
+void MainWindow::drawData() {
+
+}
+
+// END TODO
+
+void MainWindow::clearFerryLineEdit() {
+    ui->ferryLengthLineEdit->clear();
+}
+
+void MainWindow::clearFerry() {
+    ferryLength = 0;
+}
+
+void MainWindow::clearData() {
+    center.setX(0);
+    center.setY(0);
+    radius = 0;
+    cars.clear();
+}
+
+void MainWindow::clearCarLineEdits() {
+    ui->callLineEdit->clear();
+    ui->widthLineEdit->clear();
+    ui->lengthLineEdit->clear();
+    ui->xCoordLineEdit->clear();
+    ui->yCoordLineEdit->clear();
 }
 
 // Set the desired size and screen-mode type.
@@ -74,17 +119,17 @@ void MainWindow::reloadTable() {
     ui->tableView->resizeColumnsToContents();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_clearCarPushButton_clicked()
+void MainWindow::on_clearCarPushButton_clicked() {
+    clearCarLineEdits();
+}
+
+
+void MainWindow::on_clearTablePushButton_clicked()
 {
-    ui->callLineEdit->clear();
-    ui->widthLineEdit->clear();
-    ui->lengthLineEdit->clear();
-    ui->xCoordLineEdit->clear();
-    ui->yCoordLineEdit->clear();
+    reloadApp();
 }
 

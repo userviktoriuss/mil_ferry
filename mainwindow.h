@@ -28,23 +28,43 @@ public:
 private slots:
     void on_clearCarPushButton_clicked();
 
+    void on_clearTablePushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
+    // Data about cars.
     vector<Car> cars;
+    // Circle center.
+    QPointF center;
+    // Circle radius.
+    double radius = 0;
+    // Ferry length.
+    double ferryLength = 0;
 
     void setupScreen();
 
-    // Reload - display latest data.
+    // Set up to initial state.
     void reloadApp();
+    // Load data from cars to the table.
     void reloadTable();
-    void reloadCar();
 
 
-    // Clear - set data to default values.
-    void clearApp();
-    void clearCar();
-    void clearTable();
+    // Clear LineEdits for car parameters group.
+    void clearCarLineEdits();
+    // Clear LineEdit for ferry.
+    void clearFerryLineEdit();
+    // Clears ferry's length
+    void clearFerry();
+    // Clears container 'cars' and the circle data.
+    void clearData();
+    // Clears the grid.
+    void clearGraph();
+
+    // Draws the grid.
+    void drawGrid();
+    // Draws cars and circle.
+    void drawData();
 
 };
 #endif // MAINWINDOW_H
