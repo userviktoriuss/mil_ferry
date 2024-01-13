@@ -23,6 +23,22 @@ void MainWindow::setupValidators() {
     auto callValidator = new QRegularExpressionValidator(regexp);
     callValidator->setRegularExpression(regexp);
     ui->callLineEdit->setValidator(callValidator);
+
+    // widthLineEdit.
+    ui->widthLineEdit->setMaxLength(9);
+    ui->widthLineEdit->setValidator(new QDoubleValidator());
+
+    // lengthLineEdit.
+    ui->lengthLineEdit->setMaxLength(9);
+    ui->lengthLineEdit->setValidator(new QDoubleValidator());
+
+    // xCoordLineEdit.
+    ui->xCoordLineEdit->setMaxLength(9);
+    ui->xCoordLineEdit->setValidator(new QDoubleValidator());
+
+    // yCoordLineEdit.
+    ui->yCoordLineEdit->setMaxLength(9);
+    ui->yCoordLineEdit->setValidator(new QDoubleValidator());
 }
 
 void MainWindow::reloadApp() {
@@ -30,6 +46,11 @@ void MainWindow::reloadApp() {
     clearData();
     clearFerry();
 
+    // Reload UI
+    reloadUI();
+}
+
+void MainWindow::reloadUI() {
     // Clear UI
     clearCarLineEdits();
     clearFerryLineEdit();
@@ -142,6 +163,7 @@ void MainWindow::on_clearTablePushButton_clicked()
 }
 
 
+/*
 void MainWindow::on_callLineEdit_textChanged(const QString &newText)
 {
     auto text = newText;
@@ -151,5 +173,97 @@ void MainWindow::on_callLineEdit_textChanged(const QString &newText)
     callLineEditOk = res == QValidator::Acceptable;
 
     checkCarParametersOk(); // TODO: impl.
+}
+*/
+
+void MainWindow::checkCarParametersOk() {
+    bool enabled = callLineEditOk &&
+                   widthLineEditOk &&
+                   lengthLineEditOk &&
+                   xCoordLineEditOk &&
+                   yCoordLineEditOk;
+    ui->addCarPushButton->setEnabled(enabled);
+}
+
+void MainWindow::on_widthLineEdit_editingFinished()
+{
+    widthLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_widthLineEdit_textChanged(const QString &arg1)
+{
+    widthLineEditOk = false;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_lengthLineEdit_editingFinished()
+{
+    lengthLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_lengthLineEdit_textChanged(const QString &arg1)
+{
+    lengthLineEditOk = false;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_xCoordLineEdit_editingFinished()
+{
+    xCoordLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_xCoordLineEdit_textChanged(const QString &arg1)
+{
+    xCoordLineEditOk = false;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_yCoordLineEdit_editingFinished()
+{
+    yCoordLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_yCoordLineEdit_textChanged(const QString &arg1)
+{
+    yCoordLineEditOk = false;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_callLineEdit_editingFinished()
+{
+    callLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_callLineEdit_textChanged(const QString &arg1)
+{
+    callLineEditOk = false;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_addCarPushButton_clicked()
+{
+    string call = ui->callLineEdit->text().toStdString();
+    double width = ui->widthLineEdit->text().toDouble();
+    double length = ui->lengthLineEdit->text().toDouble();
+    double xCoord = ui->xCoordLineEdit->text().toDouble();
+    double yCoord = ui->yCoordLineEdit->text().toDouble();
+
+    cars.push_back(Car(call, xCoord, yCoord, width, length));
+    reloadUI();
 }
 

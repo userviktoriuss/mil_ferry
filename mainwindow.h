@@ -31,7 +31,27 @@ private slots:
 
     void on_clearTablePushButton_clicked();
 
+    void on_widthLineEdit_editingFinished();
+
+    void on_widthLineEdit_textChanged(const QString &arg1);
+
+    void on_lengthLineEdit_editingFinished();
+
+    void on_lengthLineEdit_textChanged(const QString &arg1);
+
+    void on_xCoordLineEdit_editingFinished();
+
+    void on_xCoordLineEdit_textChanged(const QString &arg1);
+
+    void on_yCoordLineEdit_editingFinished();
+
+    void on_yCoordLineEdit_textChanged(const QString &arg1);
+
+    void on_callLineEdit_editingFinished();
+
     void on_callLineEdit_textChanged(const QString &arg1);
+
+    void on_addCarPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -65,6 +85,8 @@ private:
     // Setups text validators for LineEdits
     void setupValidators();
 
+    // Clears and redraws the UI.
+    void reloadUI();
     // Set up to initial state.
     void reloadApp();
     // Load data from cars to the table.
