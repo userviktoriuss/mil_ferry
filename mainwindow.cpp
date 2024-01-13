@@ -10,12 +10,20 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     setupScreen();
+    setupValidators();
     // Reloads all widets data
     reloadApp();
 }
 
 // TODO:
 
+void MainWindow::setupValidators() {
+    // callLineEdit.
+    QRegularExpression regexp("^[а-яА-Я]([а-яА-Я0-9]){0,14}$");  // TODO: set pattern
+    auto callValidator = new QRegularExpressionValidator(regexp);
+    callValidator->setRegularExpression(regexp);
+    ui->callLineEdit->setValidator(callValidator);
+}
 
 void MainWindow::reloadApp() {
     // Clear all the data.
@@ -131,5 +139,17 @@ void MainWindow::on_clearCarPushButton_clicked() {
 void MainWindow::on_clearTablePushButton_clicked()
 {
     reloadApp();
+}
+
+
+void MainWindow::on_callLineEdit_textChanged(const QString &newText)
+{
+    auto text = newText;
+    int pos = 0;
+    ui->callLineEdit->setText(newText);
+    auto res = ui->callLineEdit->validator()->validate(text, pos);
+    callLineEditOk = res == QValidator::Acceptable;
+
+    checkCarParametersOk(); // TODO: impl.
 }
 

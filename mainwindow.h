@@ -8,6 +8,7 @@
 #include "QStandardItem"
 #include <vector>
 #include "car.h"
+#include <QRegularExpression>
 
 using std::vector;
 
@@ -30,6 +31,8 @@ private slots:
 
     void on_clearTablePushButton_clicked();
 
+    void on_callLineEdit_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 
@@ -42,7 +45,25 @@ private:
     // Ferry length.
     double ferryLength = 0;
 
+    // Validators utils -------------------
+
+    // True, if lineEdits are formatted properly.
+
+    bool callLineEditOk = false;
+    bool widthLineEditOk = false;
+    bool lengthLineEditOk = false;
+    bool xCoordLineEditOk = false;
+    bool yCoordLineEditOk = false;
+
+    // Checks that car parameters are ok. If so, enables addCarPushButton. Otherwise, disables it.
+    void checkCarParametersOk();
+
+    // End Validators utils ---------------
+
+    // Setups screen size and it's changeing policy.
     void setupScreen();
+    // Setups text validators for LineEdits
+    void setupValidators();
 
     // Set up to initial state.
     void reloadApp();
