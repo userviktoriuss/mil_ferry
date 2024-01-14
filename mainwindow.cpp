@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "qDebug"
 
 using std::to_string;
 
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     setupScreen();
+    setupGraphicsView();
     setupValidators();
     // Reloads all widets data
     reloadApp();
@@ -67,15 +69,75 @@ void MainWindow::reloadUI() {
 }
 
 void MainWindow::clearGraph() {
-
+    if (scene) {
+        delete scene;
+        scene = nullptr;
+    }
 }
 
 void MainWindow::drawGrid() {
+    // Create new scene.
+    scene = new QGraphicsScene;
+    ui->graphicsView->setScene(scene);
 
+    auto width = ui->graphicsView->width();
+    auto height = ui->graphicsView->height();
+    scene->setSceneRect(0, 0, width, height);
+
+    scene->addRect(0, 0, 100, 200);
+
+    qInfo() << "Scene W/H: " << width << "/" << height;
+
+    // Draw grid.
+    auto dw = width / 12.0 * 10;
+    auto dh = height / 12.0 * 10;
+
+    auto markw = dw / 10;
+    auto markh = dh / 10;
+
+
+    for (int i = 1; i < 11; ++i) {
+        // Draw horizontal.
+        auto x1 = dw - markw;
+        auto x2 = 10 * dw + markw;
+        auto y = i * dh;
+
+        // Move according to the qt coordinate system.
+        /*x1 -= width / 2;
+        x2 -= width / 2;
+        y -= height / 2;*/
+
+        scene->addLine(x1, y, x2, y);
+
+        // Draw vertical.
+        auto y1 = dh - markh;
+        auto y2 = 10 * dh + markh;
+        auto x = i * dw;
+
+        // Move according to the qt coordinate system.
+        /*y1 -= height / 2;
+        y2 -= height / 2;
+        x -= width/ 2;*/
+
+        scene->addLine(x, y1, x, y2);
+    }
+
+    //scene->addLine(-width / 2, 0, 100 - width / 2, 0);
+    // Set labels.
 }
 
 void MainWindow::drawData() {
+    auto carPen = QPen(Qt::red);
+    auto carBrush = QBrush(Qt::red);
 
+    //scene->addRect(0, 0, 100, 150, carPen, carBrush);
+}
+
+void MainWindow::setupGraphicsView() {
+    // TODO: Set size if needed
+
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 // END TODO
@@ -110,7 +172,7 @@ void MainWindow::setupScreen() {
     int screenWidth = geom.width();
     int screenHeight = geom.height();
     this->setFixedHeight(screenHeight);
-    // this->setFixedWidth(screenWidth);
+    this->setFixedWidth(this->width());
 
     // Place window in the center of the screen.
     move((screenWidth - this->width()) / 2,(screenHeight - this->height()) / 2);

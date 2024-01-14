@@ -9,6 +9,7 @@
 #include <vector>
 #include "car.h"
 #include <QRegularExpression>
+#include <QGraphicsScene>
 
 using std::vector;
 
@@ -60,6 +61,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    // Scene for drawing grid and cars.
+    QGraphicsScene *scene = nullptr;
+
     // Data about cars.
     vector<Car> cars;
     // Circle center.
@@ -88,6 +92,8 @@ private:
     void setupScreen();
     // Setups text validators for LineEdits
     void setupValidators();
+    // Setups graphicsView
+    void setupGraphicsView();
 
     // Clears and redraws the UI.
     void reloadUI();
