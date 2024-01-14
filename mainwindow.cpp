@@ -110,7 +110,10 @@ void MainWindow::setupScreen() {
     int screenWidth = geom.width();
     int screenHeight = geom.height();
     this->setFixedHeight(screenHeight);
-    this->setFixedWidth(screenWidth);
+    // this->setFixedWidth(screenWidth);
+
+    // Place window in the center of the screen.
+    move((screenWidth - this->width()) / 2,(screenHeight - this->height()) / 2);
 
     // setup placePushButton
     ui->placePushButton->setStyleSheet("background-color: rgba(0, 127, 255, 0.5)");
