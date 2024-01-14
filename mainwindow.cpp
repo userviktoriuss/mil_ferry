@@ -39,6 +39,10 @@ void MainWindow::setupValidators() {
     // yCoordLineEdit.
     ui->yCoordLineEdit->setMaxLength(9);
     ui->yCoordLineEdit->setValidator(new QDoubleValidator());
+
+    // ferryLengthLineEdit.
+    ui->yCoordLineEdit->setMaxLength(9);
+    ui->yCoordLineEdit->setValidator(new QDoubleValidator());
 }
 
 void MainWindow::reloadApp() {
@@ -107,6 +111,9 @@ void MainWindow::setupScreen() {
     int screenHeight = geom.height();
     this->setFixedHeight(screenHeight);
     this->setFixedWidth(screenWidth);
+
+    // setup placePushButton
+    ui->placePushButton->setStyleSheet("background-color: rgba(0, 127, 255, 0.5)");
 }
 
 // Update table according to the stored data.
@@ -141,11 +148,18 @@ void MainWindow::reloadTable() {
         model->setItem(i, 5, new QStandardItem(car.position.c_str()));
     }
 
+    // Set header color.
+    ui->tableView->setStyleSheet("QHeaderView::section { background-color: rgb(169, 169, 169) }");
+
     // Pass the data to table.
     ui->tableView->setModel(model);
     ui->tableView->verticalHeader()->setVisible(false); // Hide numerations of rows.
     ui->tableView->resizeRowsToContents();
     ui->tableView->resizeColumnsToContents();
+
+    // Set enabled for placePushButton and transportPushButton
+    ui->placePushButton->setEnabled(cars.size() >= 1);
+    ui->transportPushButton->setEnabled(cars.size() >= 1);
 }
 
 MainWindow::~MainWindow() {
@@ -265,5 +279,17 @@ void MainWindow::on_addCarPushButton_clicked()
 
     cars.push_back(Car(call, xCoord, yCoord, width, length));
     reloadUI();
+}
+
+
+void MainWindow::on_ferryLengthLineEdit_editingFinished()
+{
+    ui->setFerryLengthPushButton->setEnabled(true);
+}
+
+
+void MainWindow::on_ferryLengthLineEdit_textChanged(const QString &arg1)
+{
+    ui->setFerryLengthPushButton->setEnabled(false);
 }
 

@@ -53,6 +53,10 @@ private slots:
 
     void on_addCarPushButton_clicked();
 
+    void on_ferryLengthLineEdit_editingFinished();
+
+    void on_ferryLengthLineEdit_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 
