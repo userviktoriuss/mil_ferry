@@ -802,6 +802,24 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>callLineEdit</tabstop>
+  <tabstop>widthLineEdit</tabstop>
+  <tabstop>lengthLineEdit</tabstop>
+  <tabstop>xCoordLineEdit</tabstop>
+  <tabstop>yCoordLineEdit</tabstop>
+  <tabstop>clearCarPushButton</tabstop>
+  <tabstop>addCarPushButton</tabstop>
+  <tabstop>ferryLengthLineEdit</tabstop>
+  <tabstop>setFerryLengthPushButton</tabstop>
+  <tabstop>clearTablePushButton</tabstop>
+  <tabstop>importPushButton</tabstop>
+  <tabstop>documentPushButton</tabstop>
+  <tabstop>transportPushButton</tabstop>
+  <tabstop>placePushButton</tabstop>
+  <tabstop>tableView</tabstop>
+  <tabstop>graphicsView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

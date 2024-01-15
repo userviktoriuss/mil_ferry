@@ -10,6 +10,8 @@
 #include "car.h"
 #include <QRegularExpression>
 #include <QGraphicsScene>
+#include "QGraphicsTextItem"
+#include "QMessageBox"
 
 using std::vector;
 
@@ -63,6 +65,7 @@ private:
 
     // Scene for drawing grid and cars.
     QGraphicsScene *scene = nullptr;
+
 
     // Data about cars.
     vector<Car> cars;
@@ -119,5 +122,7 @@ private:
     // Draws cars and circle.
     void drawData();
 
+    // Rounds the given double 1 sign after dot and gets its strig representation.
+    string toString(const double &);
 };
 #endif // MAINWINDOW_H

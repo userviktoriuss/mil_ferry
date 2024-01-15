@@ -84,53 +84,100 @@ void MainWindow::drawGrid() {
     auto height = ui->graphicsView->height();
     scene->setSceneRect(0, 0, width, height);
 
-    scene->addRect(0, 0, 100, 200);
-
-    qInfo() << "Scene W/H: " << width << "/" << height;
-
     // Draw grid.
-    auto dw = width / 12.0 * 10;
-    auto dh = height / 12.0 * 10;
+    auto dw = width / 11.0;
+    auto dh = height / 11.0;
 
     auto markw = dw / 10;
     auto markh = dh / 10;
 
 
-    for (int i = 1; i < 11; ++i) {
-        // Draw horizontal.
+    // Pen for drawing the lines.
+    QPen linesPen = QPen(Qt::gray, 2);
+
+    // Draw horizontal.
+    for (int i = 1; i <= 10; ++i) {
         auto x1 = dw - markw;
         auto x2 = 10 * dw + markw;
         auto y = i * dh;
 
-        // Move according to the qt coordinate system.
-        /*x1 -= width / 2;
-        x2 -= width / 2;
-        y -= height / 2;*/
+        scene->addLine(x1, y, x2, y, linesPen);
+    }
 
-        scene->addLine(x1, y, x2, y);
-
-        // Draw vertical.
+    // Draw vertical.
+    for (int i = 1; i <= 10; ++i) {
         auto y1 = dh - markh;
         auto y2 = 10 * dh + markh;
         auto x = i * dw;
 
-        // Move according to the qt coordinate system.
-        /*y1 -= height / 2;
-        y2 -= height / 2;
-        x -= width/ 2;*/
-
-        scene->addLine(x, y1, x, y2);
+        scene->addLine(x, y1, x, y2, linesPen);
     }
+}
 
-    //scene->addLine(-width / 2, 0, 100 - width / 2, 0);
-    // Set labels.
+string MainWindow::toString(const double &x) {
+    int num = std::round(x * 10);
+    auto res = to_string(num / 10) + "." + to_string(num % 10);
+    return res;
 }
 
 void MainWindow::drawData() {
+    if (cars.empty())
+        return;
+
+    double maxX = 0;
+    double maxY = 0;
+    for (auto &car : cars) {
+        maxX = std::max(maxX, car.X + car.width / 100.0);
+        maxY = std::max(maxY, car.Y + car.length / 100.0);
+    }
+    ++maxX;
+    ++maxY;
+
+    // Create labels.
+    auto width = scene->width();
+    auto height = scene->height();
+    auto dw = width / 11.0;
+    auto dh = height / 11.0;
+    auto markw = dw / 10;
+    auto markh = dh / 10;
+
+    // For ordinate.
+    for (int i = 1; i <= 10; ++i) {
+        auto text = toString((10 - i) / 9.0 * maxY);
+        auto label = scene->addText(text.c_str());
+        auto x = dw - 9 * markw;
+        auto y = i * dh - 15;
+        label->setPos(x, y);
+    }
+    // For abscissa.
+    for (int i = 1; i <= 10; ++i) {
+        auto text = toString((i - 1) / 9.0 * maxX);
+        auto label = scene->addText(text.c_str());
+        auto x = i * dw - 15;
+        auto y = height - dh + markh;
+        label->setPos(x, y);
+    }
+
     auto carPen = QPen(Qt::red);
     auto carBrush = QBrush(Qt::red);
 
-    //scene->addRect(0, 0, 100, 150, carPen, carBrush);
+    auto mapXCoords = [dw, maxX](double x) {
+        return x / maxX * 9 * dw;
+    };
+    auto mapYCoords = [dh, maxY](double y) {
+        return y / maxY * 9 * dh;
+    };
+
+    //qInfo() << "reload:";
+    for (auto & car : cars) {
+        auto x = dw + mapXCoords(car.X);
+        auto y = height - dh - mapYCoords(car.Y);
+        auto w = mapXCoords(car.width / 100.0);
+        auto h = mapYCoords(car.length / 100.0);
+        y -= h; // Because the coordinates of a Rect are at its top left.
+        //qInfo() << x << " " << y << "; w/h: " << w << " " << h;
+        scene->addRect(x, y, w, h, carPen, carBrush);
+    }
 }
 
 void MainWindow::setupGraphicsView() {
@@ -196,6 +243,8 @@ void MainWindow::reloadTable() {
 
     model->setHorizontalHeaderLabels(horizontalHeader);
 
+    QStandardItem* row[6];
+
     // Fill data.
     for (int i = 0; i < cars.size(); ++i) {
         auto & car = cars[i];
@@ -205,12 +254,17 @@ void MainWindow::reloadTable() {
             return s.substr(0, pos + 1 + 2);
         };
 
-        model->setItem(i, 0, new QStandardItem(car.call.c_str())); // Sorry about that, I'm too lazy now.
-        model->setItem(i, 1, new QStandardItem(str(car.X).c_str()));
-        model->setItem(i, 2, new QStandardItem(str(car.Y).c_str()));
-        model->setItem(i, 3, new QStandardItem(str(car.width).c_str()));
-        model->setItem(i, 4, new QStandardItem(str(car.length).c_str()));
-        model->setItem(i, 5, new QStandardItem(car.position.c_str()));
+        row[0] = new QStandardItem(car.call.c_str()); // Sorry about that, I'm too lazy now.
+        row[1] = new QStandardItem(str(car.X).c_str());
+        row[2] = new QStandardItem(str(car.Y).c_str());
+        row[3] = new QStandardItem(str(car.width).c_str());
+        row[4] = new QStandardItem(str(car.length).c_str());
+        row[5] = new QStandardItem(car.position.c_str());
+
+        for (int j = 0; j < 6; ++j) {
+            row[j]->setEditable(false);
+            model->setItem(i, j, row[j]);
+        }
     }
 
     // Set header color.
@@ -337,13 +391,48 @@ void MainWindow::on_callLineEdit_textChanged(const QString &arg1)
 void MainWindow::on_addCarPushButton_clicked()
 {
     string call = ui->callLineEdit->text().toStdString();
-    double width = ui->widthLineEdit->text().toDouble();
-    double length = ui->lengthLineEdit->text().toDouble();
-    double xCoord = ui->xCoordLineEdit->text().toDouble();
-    double yCoord = ui->yCoordLineEdit->text().toDouble();
+    double width = ui->widthLineEdit->text().replace(',', '.').toDouble();
+    double length = ui->lengthLineEdit->text().replace(',', '.').toDouble();
+    double xCoord = ui->xCoordLineEdit->text().replace(',', '.').toDouble();
+    double yCoord = ui->yCoordLineEdit->text().replace(',', '.').toDouble();
 
-    cars.push_back(Car(call, xCoord, yCoord, width, length));
-    reloadUI();
+    //qInfo() << "w/l: " << width << " " << length << "; x/y: " << xCoord << " " << yCoord;
+
+    bool sameCall = false;
+    bool intersects = false;
+
+    for (auto & car : cars) {
+        if (car.call == call)
+            sameCall = true;
+
+        auto left = std::max(xCoord, car.X);
+        auto right = std::min(xCoord + width / 100.0, car.X + car.width / 100.0);
+        auto bottom = std::max(yCoord, car.Y);
+        auto top = std::min(yCoord + length / 100.0, car.Y + car.length / 100.0);
+
+        //qInfo() << left << " " << right << " " << bottom << " " << top;
+
+        if (left <= right || bottom <= top)
+            intersects = true;
+    }
+
+    if (!sameCall && !intersects) {
+        cars.push_back(Car(call, xCoord, yCoord, width, length));
+        reloadUI();
+    } else {
+        // Send message;
+        if (sameCall) {
+            QMessageBox msgBox;
+            msgBox.setText("Такая запись уже существует!");
+            msgBox.setWindowTitle("Оповещение");
+            msgBox.exec();
+        } else {
+            QMessageBox msgBox;
+            msgBox.setText("Пересечения запрещены!");
+            msgBox.setWindowTitle("Оповещение");
+            msgBox.exec();
+        }
+    }
 }
 
 
