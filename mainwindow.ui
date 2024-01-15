@@ -787,11 +787,17 @@
    </property>
   </action>
   <action name="action_4">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Перевозка</string>
    </property>
   </action>
   <action name="action_5">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Размещение</string>
    </property>

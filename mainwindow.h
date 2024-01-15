@@ -12,6 +12,7 @@
 #include <QGraphicsScene>
 #include "QGraphicsTextItem"
 #include "QMessageBox"
+#include "QVector2D"
 
 using std::vector;
 
@@ -34,31 +35,67 @@ private slots:
 
     void on_clearTablePushButton_clicked();
 
-    void on_widthLineEdit_editingFinished();
+    //void on_widthLineEdit_editingFinished();
 
     void on_widthLineEdit_textChanged(const QString &arg1);
 
-    void on_lengthLineEdit_editingFinished();
+    //void on_lengthLineEdit_editingFinished();
 
     void on_lengthLineEdit_textChanged(const QString &arg1);
 
-    void on_xCoordLineEdit_editingFinished();
+    //void on_xCoordLineEdit_editingFinished();
 
     void on_xCoordLineEdit_textChanged(const QString &arg1);
 
-    void on_yCoordLineEdit_editingFinished();
+    //void on_yCoordLineEdit_editingFinished();
 
     void on_yCoordLineEdit_textChanged(const QString &arg1);
 
-    void on_callLineEdit_editingFinished();
+    //void on_callLineEdit_editingFinished();
 
     void on_callLineEdit_textChanged(const QString &arg1);
 
     void on_addCarPushButton_clicked();
 
-    void on_ferryLengthLineEdit_editingFinished();
+    //void on_ferryLengthLineEdit_editingFinished();
 
     void on_ferryLengthLineEdit_textChanged(const QString &arg1);
+
+    void on_callLineEdit_returnPressed();
+
+    void on_widthLineEdit_returnPressed();
+
+    void on_lengthLineEdit_returnPressed();
+
+    void on_xCoordLineEdit_returnPressed();
+
+    void on_yCoordLineEdit_returnPressed();
+
+    void on_ferryLengthLineEdit_returnPressed();
+
+    void on_setFerryLengthPushButton_clicked();
+
+    void on_xCoordLineEdit_editingFinished();
+
+    void on_yCoordLineEdit_editingFinished();
+
+    void on_callLineEdit_editingFinished();
+
+    void on_widthLineEdit_editingFinished();
+
+    void on_lengthLineEdit_editingFinished();
+
+    void on_ferryLengthLineEdit_editingFinished();
+
+    void on_action_2_triggered();
+
+    void on_transportPushButton_clicked();
+
+    void on_action_4_triggered();
+
+    void on_placePushButton_clicked();
+
+    void on_action_5_triggered();
 
 private:
     Ui::MainWindow *ui;

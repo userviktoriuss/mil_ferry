@@ -133,7 +133,7 @@ void MainWindow::drawData() {
     ++maxX;
     ++maxY;
 
-    // Create labels.
+    // Some utils.
     auto width = scene->width();
     auto height = scene->height();
     auto dw = width / 11.0;
@@ -141,6 +141,7 @@ void MainWindow::drawData() {
     auto markw = dw / 10;
     auto markh = dh / 10;
 
+    // Create labels.
     // For ordinate.
     for (int i = 1; i <= 10; ++i) {
         auto text = toString((10 - i) / 9.0 * maxY);
@@ -168,7 +169,25 @@ void MainWindow::drawData() {
         return y / maxY * 9 * dh;
     };
 
+    // Draw the circle.
+    auto drawCircle = [=](double cx, double cy, double r, Qt::GlobalColor color) {
+        auto x = dw + mapXCoords(cx - r);
+        auto y = height - dh - mapYCoords(cy - r);
+        auto w = mapXCoords(2 * r);
+        auto h = mapYCoords(2 * r);
+        y -= h; // Because the coordinates of a Rect are at its top left.
+        auto rect = QRect(x, y, w, h);
+        scene->addEllipse(
+            rect,
+            QPen(color),
+            QBrush(color));
+    };
+    if (!center.isNull()) {
+        drawCircle(center.x(), center.y(), radius, Qt::green);
+    }
+
     //qInfo() << "reload:";
+    // Draw the cars.
     for (auto & car : cars) {
         auto x = dw + mapXCoords(car.X);
         auto y = height - dh - mapYCoords(car.Y);
@@ -177,6 +196,13 @@ void MainWindow::drawData() {
         y -= h; // Because the coordinates of a Rect are at its top left.
         //qInfo() << x << " " << y << "; w/h: " << w << " " << h;
         scene->addRect(x, y, w, h, carPen, carBrush);
+    }
+
+    // Draw the circle center.
+    if (!center.isNull()) {
+        drawCircle(center.x(), center.y(), radius / 20, Qt::black);
+        // qInfo() << "x/y: " << center.x() << " " << center.y();
+        // qInfo() << "x/y: " << dw + mapXCoords(center.x()) << " " << height - dh - mapYCoords(center.y());
     }
 }
 
@@ -202,6 +228,7 @@ void MainWindow::clearData() {
     center.setY(0);
     radius = 0;
     cars.clear();
+    ferryLength = 0;
 }
 
 void MainWindow::clearCarLineEdits() {
@@ -276,9 +303,12 @@ void MainWindow::reloadTable() {
     ui->tableView->resizeRowsToContents();
     ui->tableView->resizeColumnsToContents();
 
-    // Set enabled for placePushButton and transportPushButton
-    ui->placePushButton->setEnabled(cars.size() >= 1);
-    ui->transportPushButton->setEnabled(cars.size() >= 1);
+    // Set enabled for placePushButton and transportPushButton and for menu bars
+    bool cond = cars.size() >= 1;
+    ui->placePushButton->setEnabled(cond);
+    ui->transportPushButton->setEnabled(cond);
+    ui->action_4->setEnabled(cond);
+    ui->action_5->setEnabled(cond);
 }
 
 MainWindow::~MainWindow() {
@@ -315,15 +345,21 @@ void MainWindow::checkCarParametersOk() {
                    lengthLineEditOk &&
                    xCoordLineEditOk &&
                    yCoordLineEditOk;
+    qInfo() << callLineEditOk <<
+            widthLineEditOk <<
+            lengthLineEditOk <<
+            xCoordLineEditOk <<
+            yCoordLineEditOk;
     ui->addCarPushButton->setEnabled(enabled);
 }
 
+/*
 void MainWindow::on_widthLineEdit_editingFinished()
 {
     widthLineEditOk = true;
     checkCarParametersOk();
 }
-
+*/
 
 void MainWindow::on_widthLineEdit_textChanged(const QString &arg1)
 {
@@ -331,13 +367,13 @@ void MainWindow::on_widthLineEdit_textChanged(const QString &arg1)
     checkCarParametersOk();
 }
 
-
+/*
 void MainWindow::on_lengthLineEdit_editingFinished()
 {
     lengthLineEditOk = true;
     checkCarParametersOk();
 }
-
+*/
 
 void MainWindow::on_lengthLineEdit_textChanged(const QString &arg1)
 {
@@ -345,13 +381,13 @@ void MainWindow::on_lengthLineEdit_textChanged(const QString &arg1)
     checkCarParametersOk();
 }
 
-
+/*
 void MainWindow::on_xCoordLineEdit_editingFinished()
 {
     xCoordLineEditOk = true;
     checkCarParametersOk();
 }
-
+*/
 
 void MainWindow::on_xCoordLineEdit_textChanged(const QString &arg1)
 {
@@ -359,24 +395,17 @@ void MainWindow::on_xCoordLineEdit_textChanged(const QString &arg1)
     checkCarParametersOk();
 }
 
-
+/*
 void MainWindow::on_yCoordLineEdit_editingFinished()
 {
     yCoordLineEditOk = true;
     checkCarParametersOk();
 }
-
+*/
 
 void MainWindow::on_yCoordLineEdit_textChanged(const QString &arg1)
 {
     yCoordLineEditOk = false;
-    checkCarParametersOk();
-}
-
-
-void MainWindow::on_callLineEdit_editingFinished()
-{
-    callLineEditOk = true;
     checkCarParametersOk();
 }
 
@@ -412,12 +441,13 @@ void MainWindow::on_addCarPushButton_clicked()
 
         //qInfo() << left << " " << right << " " << bottom << " " << top;
 
-        if (left <= right || bottom <= top)
+        if (left <= right && bottom <= top)
             intersects = true;
     }
 
     if (!sameCall && !intersects) {
         cars.push_back(Car(call, xCoord, yCoord, width, length));
+        callLineEditOk = widthLineEditOk = lengthLineEditOk = xCoordLineEditOk = yCoordLineEditOk = false;
         reloadUI();
     } else {
         // Send message;
@@ -435,6 +465,123 @@ void MainWindow::on_addCarPushButton_clicked()
     }
 }
 
+/*
+void MainWindow::on_ferryLengthLineEdit_editingFinished()
+{
+    ui->setFerryLengthPushButton->setEnabled(true);
+}
+*/
+
+void MainWindow::on_ferryLengthLineEdit_textChanged(const QString &arg1)
+{
+    ui->setFerryLengthPushButton->setEnabled(false);
+}
+
+
+void MainWindow::on_callLineEdit_returnPressed()
+{
+    callLineEditOk = true;
+    checkCarParametersOk();
+    QWidget::focusNextChild();
+}
+
+
+void MainWindow::on_widthLineEdit_returnPressed()
+{
+    widthLineEditOk = true;
+    checkCarParametersOk();
+    QWidget::focusNextChild();
+}
+
+
+void MainWindow::on_lengthLineEdit_returnPressed()
+{
+    lengthLineEditOk = true;
+    checkCarParametersOk();
+    QWidget::focusNextChild();
+}
+
+
+void MainWindow::on_xCoordLineEdit_returnPressed()
+{
+    xCoordLineEditOk = true;
+    checkCarParametersOk();
+    QWidget::focusNextChild();
+}
+
+
+void MainWindow::on_yCoordLineEdit_returnPressed()
+{
+    auto str = ui->yCoordLineEdit->text();
+    int pos = 0; // Sorry about this, too.
+    if (!ui->yCoordLineEdit->validator()->validate(str, pos)) {
+        yCoordLineEditOk = false;
+        return;
+    }
+
+    yCoordLineEditOk = true;
+    checkCarParametersOk();
+    on_addCarPushButton_clicked();
+    //QWidget::setFocus()
+    ui->callLineEdit->setFocus();
+}
+
+
+void MainWindow::on_ferryLengthLineEdit_returnPressed()
+{
+    ui->setFerryLengthPushButton->setEnabled(true);
+    on_setFerryLengthPushButton_clicked();
+}
+
+
+void MainWindow::on_setFerryLengthPushButton_clicked()
+{
+    ferryLength = ui->ferryLengthLineEdit->text().replace(',', '.').toDouble();
+}
+
+
+void MainWindow::on_xCoordLineEdit_editingFinished()
+{
+    xCoordLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_yCoordLineEdit_editingFinished()
+{
+    auto str = ui->yCoordLineEdit->text();
+    int pos = 0; // Sorry about this, too.
+    if (!ui->yCoordLineEdit->validator()->validate(str, pos)) {
+        yCoordLineEditOk = false;
+        return;
+    }
+    yCoordLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_callLineEdit_editingFinished()
+{
+    callLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+void MainWindow::on_widthLineEdit_editingFinished()
+{
+    widthLineEditOk = true;
+    checkCarParametersOk();
+}
+
+
+
+
+void MainWindow::on_lengthLineEdit_editingFinished()
+{
+    lengthLineEditOk = true;
+    checkCarParametersOk();
+}
+
 
 void MainWindow::on_ferryLengthLineEdit_editingFinished()
 {
@@ -442,8 +589,77 @@ void MainWindow::on_ferryLengthLineEdit_editingFinished()
 }
 
 
-void MainWindow::on_ferryLengthLineEdit_textChanged(const QString &arg1)
+void MainWindow::on_action_2_triggered()
 {
-    ui->setFerryLengthPushButton->setEnabled(false);
+    reloadApp();
+}
+
+
+void MainWindow::on_transportPushButton_clicked()
+{
+    // Now it works randomly.
+    for (auto & car : cars) {
+        int mode = rand() % 3;
+        if (mode == 0)
+            car.position = "справа";
+        else if (mode == 1)
+            car.position = "слева";
+        else
+            car.position = "";
+    }
+    reloadUI();
+}
+
+
+void MainWindow::on_action_4_triggered()
+{
+    on_transportPushButton_clicked();
+}
+
+
+void MainWindow::on_placePushButton_clicked()
+{
+    double x = 0;
+    double y = 0;
+
+    auto carVertexes = [](const Car &car) {
+        return vector<QPointF>({
+            QPointF(car.X, car.Y),
+            QPointF(car.X + car.width / 100, car.Y),
+            QPointF(car.X + car.width / 100, car.Y + car.length / 100),
+            QPointF(car.X, car.Y + car.length / 100)
+        });
+    };
+
+    for (auto &car : cars) {
+        auto pts = carVertexes(car);
+        for (auto & p : pts) {
+            x += p.x();
+            y += p.y();
+        }
+
+    }
+
+    x /= 4 * cars.size();
+    y /= 4 * cars.size();
+
+    center = QPointF(x, y);
+
+    for (auto &car : cars) {
+        auto pts = carVertexes(car);
+        for (auto & p : pts) {
+            double rad = QVector2D(center).distanceToPoint(QVector2D(p));
+            radius = std::max(radius, rad);
+        }
+
+    }
+
+    reloadUI();
+}
+
+
+void MainWindow::on_action_5_triggered()
+{
+    on_placePushButton_clicked();
 }
 
