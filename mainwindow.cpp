@@ -229,6 +229,9 @@ void MainWindow::clearData() {
     radius = 0;
     cars.clear();
     ferryLength = 0;
+
+    isAscending = true;
+    prevSortedColText = "";
 }
 
 void MainWindow::clearCarLineEdits() {
@@ -294,6 +297,31 @@ void MainWindow::reloadTable() {
         }
     }
 
+    //model->sort(0);
+    auto &table = ui->tableView;
+    connect(
+        table->horizontalHeader(),
+        &QHeaderView::sectionClicked,
+        [model, this](int logicalIndex) {
+            QString text = model->horizontalHeaderItem(logicalIndex)->text();
+            if (text == prevSortedColText) {
+                isAscending = !isAscending;
+            } else {
+                isAscending = true;
+            }
+            prevSortedColText = text;
+
+
+            auto order = isAscending ? Qt::AscendingOrder : Qt::DescendingOrder;
+
+            for (int i = 0; i < 6; ++i) {
+                if (model->horizontalHeaderItem(i)->text() == text) {
+                    model->sort(logicalIndex, order);
+                    break;
+                }
+            }
+    });
+
     // Set header color.
     ui->tableView->setStyleSheet("QHeaderView::section { background-color: rgb(169, 169, 169) }");
 
@@ -340,16 +368,27 @@ void MainWindow::on_callLineEdit_textChanged(const QString &newText)
 */
 
 void MainWindow::checkCarParametersOk() {
+    auto str = ui->yCoordLineEdit->text();
+    //qInfo() << str;
+    int pos = 0; // Sorry about this, too.
+    bool val = QDoubleValidator().validate(str, pos);
+
+    if (!val || str.size() == 0) {
+        yCoordLineEditOk = false;
+    }
+    //qInfo() << !val << " " << yCoordLineEditOk;
+
     bool enabled = callLineEditOk &&
                    widthLineEditOk &&
                    lengthLineEditOk &&
                    xCoordLineEditOk &&
                    yCoordLineEditOk;
-    qInfo() << callLineEditOk <<
+    /*qInfo() << callLineEditOk <<
             widthLineEditOk <<
             lengthLineEditOk <<
             xCoordLineEditOk <<
-            yCoordLineEditOk;
+            yCoordLineEditOk;*/
+
     ui->addCarPushButton->setEnabled(enabled);
 }
 
@@ -419,6 +458,10 @@ void MainWindow::on_callLineEdit_textChanged(const QString &arg1)
 
 void MainWindow::on_addCarPushButton_clicked()
 {
+    radius = 0;
+    center.setX(0);
+    center.setY(0);
+
     string call = ui->callLineEdit->text().toStdString();
     double width = ui->widthLineEdit->text().replace(',', '.').toDouble();
     double length = ui->lengthLineEdit->text().replace(',', '.').toDouble();
@@ -439,7 +482,7 @@ void MainWindow::on_addCarPushButton_clicked()
         auto bottom = std::max(yCoord, car.Y);
         auto top = std::min(yCoord + length / 100.0, car.Y + car.length / 100.0);
 
-        //qInfo() << left << " " << right << " " << bottom << " " << top;
+        qInfo() << left << " " << right << " " << bottom << " " << top;
 
         if (left <= right && bottom <= top)
             intersects = true;
@@ -512,13 +555,6 @@ void MainWindow::on_xCoordLineEdit_returnPressed()
 
 void MainWindow::on_yCoordLineEdit_returnPressed()
 {
-    auto str = ui->yCoordLineEdit->text();
-    int pos = 0; // Sorry about this, too.
-    if (!ui->yCoordLineEdit->validator()->validate(str, pos)) {
-        yCoordLineEditOk = false;
-        return;
-    }
-
     yCoordLineEditOk = true;
     checkCarParametersOk();
     on_addCarPushButton_clicked();
@@ -549,12 +585,6 @@ void MainWindow::on_xCoordLineEdit_editingFinished()
 
 void MainWindow::on_yCoordLineEdit_editingFinished()
 {
-    auto str = ui->yCoordLineEdit->text();
-    int pos = 0; // Sorry about this, too.
-    if (!ui->yCoordLineEdit->validator()->validate(str, pos)) {
-        yCoordLineEditOk = false;
-        return;
-    }
     yCoordLineEditOk = true;
     checkCarParametersOk();
 }

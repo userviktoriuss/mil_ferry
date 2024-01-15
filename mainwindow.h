@@ -113,6 +113,11 @@ private:
     // Ferry length.
     double ferryLength = 0;
 
+    // Sort table order.
+    bool isAscending = true;
+    // Previous sorted column.
+    QString prevSortedColText = "";
+
     // Validators utils -------------------
 
     // True, if lineEdits are formatted properly.
