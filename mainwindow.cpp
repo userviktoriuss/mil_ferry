@@ -685,6 +685,13 @@ void MainWindow::on_placePushButton_clicked()
     }
 
     reloadUI();
+
+    QMessageBox msgBox;
+    string text = "Систему защиты следует расположить по координатам (" +
+            to_string(x) + "," + to_string(y) + ") с радиусом " + to_string(radius) + ".";
+    msgBox.setText(text.c_str());
+    msgBox.setWindowTitle("Результат");
+    msgBox.exec();
 }
 
 
